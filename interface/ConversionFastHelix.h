@@ -1,5 +1,5 @@
-#ifndef TR_FastHelix_H_
-#define TR_FastHelix_H_
+#ifndef Egamma_ConversionFastHelix_H_
+#define Egamma_ConversionFastHelix_H_
 
 #include "Geometry/Vector/interface/GlobalPoint.h"
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
@@ -7,11 +7,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
-// You don't really want to know why the rest does not compile on Sun 
-// whthout this method, and why it compiles with it. 
-inline GlobalPoint sun_bullshit( const GlobalPoint point) {
-  return point;
-}
+
 
 /**
    Generation of track parameters at a vertex using two hits and a vertex.
@@ -28,7 +24,7 @@ inline GlobalPoint sun_bullshit( const GlobalPoint point) {
 	                         straightLineStateAtVertex()
  */
 
-class FastHelix {
+class ConversionFastHelix {
 
 private:
   
@@ -36,12 +32,12 @@ private:
 
 public:
 
-  FastHelix(const GlobalPoint& outerHit, 
+  ConversionFastHelix(const GlobalPoint& outerHit, 
 	    const GlobalPoint& middleHit,
 	    const GlobalPoint& aVertex,
 	    const MagneticField* field);
   
-  ~FastHelix() {}
+  ~ConversionFastHelix() {}
   
   bool isValid() const {return theCircle.isValid();}
 
@@ -60,7 +56,7 @@ private:
   const MagneticField* mField;
 };
 
-#endif //TR_FastHelix_H_
+#endif //Egamma_ConversionFastHelix_H_
 
 
 
