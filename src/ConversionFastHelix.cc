@@ -1,4 +1,4 @@
-#include "RecoEgamma/EgammaPhotonAlgos/interface/FastHelix.h"
+#include "RecoEgamma/EgammaPhotonAlgos/interface/ConversionFastHelix.h"
 #include "RecoTracker/TkSeedGenerator/interface/FastLine.h"
 #include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
 #include "TrackingTools/TrajectoryParametrization/interface/CurvilinearTrajectoryError.h"
@@ -6,7 +6,8 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
-FastHelix::FastHelix(const GlobalPoint& outerHit,
+
+ConversionFastHelix::ConversionFastHelix(const GlobalPoint& outerHit,
 		     const GlobalPoint& middleHit,
 		     const GlobalPoint& aVertex,
 		    const MagneticField* field ) : theOuterHit(outerHit),
@@ -17,22 +18,29 @@ FastHelix::FastHelix(const GlobalPoint& outerHit,
 								aVertex),
 						      mField(field) {
 
+
 		     }
 
-FreeTrajectoryState FastHelix::stateAtVertex() const {
+FreeTrajectoryState ConversionFastHelix::stateAtVertex() const {
 
 
 
-  if(isValid())
+  if(   theCircle.isValid()) {
+
     return helixStateAtVertex();
-  else 
+  } else {
+
     return straightLineStateAtVertex();
     
+  }
+  
+
 }
 
-FreeTrajectoryState FastHelix::helixStateAtVertex() const {
 
- 
+FreeTrajectoryState ConversionFastHelix::helixStateAtVertex() const {
+
+
 
   GlobalPoint pMid(theMiddleHit);
   GlobalPoint v(theVertex);
@@ -48,6 +56,10 @@ FreeTrajectoryState FastHelix::helixStateAtVertex() const {
   double rho = theCircle.rho();
   // pt = 0.01 * rho * (0.3*MagneticField::inTesla(GlobalPoint(0.,0.,0.)).z());
   pt = 0.01 * rho * (0.3*mField->inTesla(GlobalPoint(0,0,0)).z());
+
+
+
+
   //  pt = 0.01 * rho * (0.3*GlobalPoint(0.,0.,0.).MagneticField().z());
 
   // (py/px)|x=v.x() = (dy/dx)|x=v.x()
@@ -110,7 +122,8 @@ FreeTrajectoryState FastHelix::helixStateAtVertex() const {
   return atVertex;
 }
 
-FreeTrajectoryState FastHelix::straightLineStateAtVertex() const {
+FreeTrajectoryState ConversionFastHelix::straightLineStateAtVertex() const {
+
 
   //calculate FTS assuming straight line...
 
