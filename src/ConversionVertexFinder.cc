@@ -2,8 +2,6 @@
 #include <vector>
 #include <memory>
 #include "RecoEgamma/EgammaPhotonAlgos/interface/ConversionVertexFinder.h"
-#include "RecoEgamma/EgammaPhotonAlgos/interface/TangentApproachInRPhi.h"
-#include "TrackingTools/GeomPropagators/interface/TrackerBounds.h"
 // Framework
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -58,17 +56,6 @@ bool  ConversionVertexFinder::run(std::vector<reco::TransientTrack>  pair, reco:
 
   if ( pair.size() < 2) return found;
   
-  TangentApproachInRPhi tangent;
-  tangent.calculate(pair[0].innermostMeasurementState(),pair[1].innermostMeasurementState());
-  if (!tangent.status()) {
-    return false;
-  }
-  
-  GlobalPoint tangentPoint = tangent.crossingPoint();
-  if (!TrackerBounds::isInside(tangentPoint)) {
-    return false;
-  }
-  
   float sigma = 0.00000001;
   float chi = 0.;
   float ndf = 0.;
@@ -84,7 +71,7 @@ bool  ConversionVertexFinder::run(std::vector<reco::TransientTrack>  pair, reco:
   
   MultiTrackKinematicConstraint *  constr = new ColinearityKinematicConstraint(ColinearityKinematicConstraint::PhiTheta);
   
-  RefCountedKinematicTree myTree = kcvFitter_->fit(particles, constr, &tangentPoint);
+  RefCountedKinematicTree myTree = kcvFitter_->fit(particles, constr);
   if( myTree->isValid() ) {
     myTree->movePointerToTheTop();                                                                                
     RefCountedKinematicParticle the_photon = myTree->currentParticle();                                           
