@@ -3,13 +3,13 @@
 /** \class PhotonEnergyCorrector
  **  
  **
- **  $Id:  PhotonEnergyCorrector$ 
- **  $Date:  $ 
- **  $Revision: $
+ **  $Id: PhotonEnergyCorrector.h,v 1.3 2011/12/15 00:20:52 nancy Exp $ 
+ **  $Date: 2011/12/15 00:20:52 $ 
+ **  $Revision: 1.3 $
  **  \author Nancy Marinelli, U. of Notre Dame, US
  **
  ***/
-
+#include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -36,14 +36,18 @@ class PhotonEnergyCorrector
  {
   public:
 
-   PhotonEnergyCorrector(const edm::ParameterSet& config,const edm::EventSetup& theEventSetup );
+   PhotonEnergyCorrector(const edm::ParameterSet& config);
    ~PhotonEnergyCorrector();
 
-   void calculate( reco::Photon &, int subdet ) ;
+   void init(const edm::EventSetup& theEventSetup );
+   void calculate( edm::Event& evt, reco::Photon &, int subdet,const reco::VertexCollection& vtxcol,const edm::EventSetup& iSetup) ;
 
 
   private:
+ 
+   bool weightsfromDB_;
    std::string w_file_;
+   std::string w_db_;
    std::string candidateP4type_; 
    EGEnergyCorrector*       regressionCorrector_;
    EcalClusterFunctionBaseClass * scEnergyFunction_;
@@ -53,6 +57,8 @@ class PhotonEnergyCorrector
    double minR9Barrel_;
    double minR9Endcap_;
    edm::ESHandle<CaloGeometry> theCaloGeom_; 
+   edm::InputTag barrelEcalHits_;
+   edm::InputTag endcapEcalHits_;
    
  } ;
 
